@@ -1,0 +1,10 @@
+# 只保留最新版实际用到的东西
+_publish/
+编程/版本/
+*.tmp
+_*
+
+# 系统杂物
+Thumbs.db
+Desktop.ini
+.DS_Store

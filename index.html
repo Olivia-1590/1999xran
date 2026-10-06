@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#eaf2ff">
+<title>叠叠乐 · 小瑞安侬与尘酿鹰</title>
+<style>
+  html,body{margin:0;height:100%;background:#1e2030;color:#eae6ff;
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    display:flex;align-items:center;justify-content:center}
+  .box{text-align:center;max-width:520px;padding:24px}
+  h1{font-size:23px;margin:0 0 8px;letter-spacing:1px}
+  p{font-size:14.5px;line-height:1.9;color:#c9c4e6;margin:8px 0}
+  .bar{width:220px;height:8px;border-radius:6px;background:#33314d;overflow:hidden;margin:18px auto 10px}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8b7fe0,#b9aefc);
+    transition:width .2s ease}
+  a.btn{display:inline-block;margin-top:14px;padding:11px 26px;border-radius:14px;font-size:15.5px;
+    font-weight:600;color:#fff;text-decoration:none;background:linear-gradient(160deg,#8b7fe0,#6b5ca5);
+    box-shadow:0 6px 16px rgba(107,92,165,.4)}
+  .tip{font-size:12.5px;color:#8f8ab0;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="box">
+  <h1>叠叠乐 · 小瑞安侬与尘酿鹰</h1>
+  <p>正在把立绘、音效与插图装进游戏……首次加载约 4 MB，稍等片刻。</p>
+  <div class="bar"><i id="p"></i></div>
+  <div class="tip" id="t">0%</div>
+  <a class="btn" id="go" href="叠叠乐.html" style="display:none">立即开始</a>
+</div>
+<script>
+/* 预取游戏本体, 显示进度, 完成后自动跳转 */
+var el = document.getElementById('p'), t = document.getElementById('t'), go = document.getElementById('go');
+var started = Date.now();
+fetch('叠叠乐.html').then(function (r) {
+  var total = +(r.headers.get('content-length') || 0), got = 0;
+  if (!r.body || !r.body.getReader) return r.text();
+  var reader = r.body.getReader();
+  return (function pump() {
+    return reader.read().then(function (res) {
+      if (res.done) return;
+      got += res.value.length;
+      var pct = total ? Math.round(got / total * 100) : Math.min(96, Math.round((Date.now() - started) / 40));
+      el.style.width = pct + '%'; t.textContent = pct + '%';
+      return pump();
+    });
+  })();
+}).then(function () {
+  el.style.width = '100%'; t.textContent = '准备完成，正在进入…';
+  setTimeout(function () { location.replace('叠叠乐.html'); }, 180);
+}).catch(function () {
+  t.textContent = '预取失败，点下面的按钮直接进入';
+  go.style.display = 'inline-block';
+});
+setTimeout(function () { go.style.display = 'inline-block'; }, 2500);
+</script>
+</body>
+</html>
